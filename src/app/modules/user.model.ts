@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { IAddress, IFullName, IOrder, IUser } from "./user/user.interface";
+import { IAddress, IFullName, IOrder, IUser, UserModel } from "./user/user.interface";
 import config from "../config";
 import bcrypt from "bcrypt";
 
@@ -48,7 +48,7 @@ const orderSchema = new Schema<IOrder>({
   },
 });
 
-const userSchema = new Schema<IUser>(
+const userSchema = new Schema<IUser, UserModel>(
   {
     userId: {
       type: Number,
@@ -93,19 +93,26 @@ const userSchema = new Schema<IUser>(
     },
   });
 
-userSchema.pre("save", async function (next) {
-  this.password = await bcrypt.hash(
-    this.password,
+  
+  userSchema.pre("save", async function (next) {
+      this.password = await bcrypt.hash(
+          this.password,
     Number(config.bcrypt_salt_round)
   );
   next();
 });
 // Exclude password field from response data
 userSchema.set("toJSON", {
-  transform: (doc, ret) => {
-    delete ret.password;
-    return ret;
-  },
+    transform: (doc, ret) => {
+        delete ret.password;
+        return ret;
+    },
 });
+// static methods for user not existing warning
+ userSchema.statics.isUserExists =  async function (id: number) {
+    const existUser = User.findOne({ userId: id });
+    return existUser;
+  };
 
-export const UserModel = model<IUser>("User", userSchema);
+
+export const User = model<IUser, UserModel>("User", userSchema);
