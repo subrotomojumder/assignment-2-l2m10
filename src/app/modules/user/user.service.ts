@@ -65,6 +65,15 @@ const userOrderAddInDb = async (id: number, orderData: IOrder) => {
   }
 };
 
+const getOrdersByUserIdInDb = async (id: number) => {
+  if (await User.isUserExists(id)) {
+    const result = User.findOne({ userId: id }, { orders: 1 });
+    return result;
+  } else {
+    throw new Error("User not found!");
+  }
+};
+
 export const UserServices = {
   createUserInDb,
   getAllUserInDb,
@@ -72,4 +81,5 @@ export const UserServices = {
   updateUserInDb,
   deleteUserInDb,
   userOrderAddInDb,
+  getOrdersByUserIdInDb,
 };
