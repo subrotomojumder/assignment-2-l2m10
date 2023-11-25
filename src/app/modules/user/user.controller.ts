@@ -111,22 +111,39 @@ const orderAddOfUser = async (req: Request, res: Response) => {
   }
 };
 const getOrdersByUserId = async (req: Request, res: Response) => {
-    try {
-      const { userId } = req.params;
-      const result = await UserServices.getOrdersByUserIdInDb(Number(userId));
-      res.status(200).json({
-        success: true,
-        message: "Order fetched successfully!",
-        data: result,
-      });
-    } catch (error: any) {
-      res.status(500).json({
-        success: false,
-        message: error.message || "Something went wrong!",
-        error: error,
-      });
-    }
-  };
+  try {
+    const { userId } = req.params;
+    const result = await UserServices.getOrdersByUserIdInDb(Number(userId));
+    res.status(200).json({
+      success: true,
+      message: "Order fetched successfully!",
+      data: result,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || "Something went wrong!",
+      error: error,
+    });
+  }
+};
+const getSumOfUserOrders = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const result = await UserServices.getSumUserOrdersIdInDb(Number(userId));
+    res.status(200).json({
+      success: true,
+      message: "Total price calculated successfully!",
+      data: result,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || "Something went wrong!",
+      error: error,
+    });
+  }
+};
 
 export const UserControllers = {
   createUser,
@@ -135,5 +152,6 @@ export const UserControllers = {
   updateUser,
   deleteUser,
   orderAddOfUser,
-  getOrdersByUserId
+  getOrdersByUserId,
+  getSumOfUserOrders,
 };

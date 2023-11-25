@@ -73,6 +73,17 @@ const getOrdersByUserIdInDb = async (id: number) => {
     throw new Error("User not found!");
   }
 };
+const getSumUserOrdersIdInDb = async (id: number) => {
+  if (await User.isUserExists(id)) {
+    const result = User.aggregate([
+        {$match: {userId: id}},
+    ])
+    console.log(result);
+    return result;
+  } else {
+    throw new Error("User not found!");
+  }
+};
 
 export const UserServices = {
   createUserInDb,
@@ -82,4 +93,5 @@ export const UserServices = {
   deleteUserInDb,
   userOrderAddInDb,
   getOrdersByUserIdInDb,
+  getSumUserOrdersIdInDb,
 };
