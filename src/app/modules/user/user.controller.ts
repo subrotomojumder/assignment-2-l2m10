@@ -4,7 +4,6 @@ import { UserServices } from "./user.service";
 const createUser = async (req: Request, res: Response)  => {
   try {
     const { user } = req.body;
-    console.log(user);
     const result = await UserServices.createUserInDb(user);
     res.status(200).json({
       success: true,
@@ -14,12 +13,29 @@ const createUser = async (req: Request, res: Response)  => {
   } catch (error: any) {
     res.status(500).json({
         success: false,
-        message: "Something went wrong!",
+        message: error.message || 'Something went wrong!',
+        error:error
+    });
+  }
+};
+const getAllUser = async (req: Request, res: Response)  => {
+  try {
+    const result = await UserServices.getAllUserInDb();
+    res.status(200).json({
+      success: true,
+      message: "User fetched successfully!",
+      data: result,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+        success: false,
+        message: error.message || 'Something went wrong!',
         error:error
     });
   }
 };
 
 export const UserControllers = {
-    createUser
+    createUser,
+    getAllUser
 }

@@ -1,5 +1,7 @@
 import { Schema, model } from "mongoose";
 import { IAddress, IFullName, IOrder, IUser } from "./user/user.interface";
+import config from "../config";
+import bcrypt from "bcrypt";
 
 const fullNameSchema = new Schema<IFullName>({
   firstName: {
@@ -46,47 +48,63 @@ const orderSchema = new Schema<IOrder>({
   },
 });
 
-const userSchema = new Schema<IUser>({
-  userId: {
-    type: Number,
-    required: [true, "userId is required!"],
-    unique: true,
-  },
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  fullName: {
-    type: fullNameSchema,
-    required: [true, "name field is required!"],
-  },
-  age: {
-    type: Number,
-    required: [true, "age is required!"],
-  },
-  email: {
-    type: String,
-    required: [true, "email is required!"],
-  },
-  isActive: {
-    type: Boolean,
-    required: true,
-    default: true,
-  },
-  hobbies: {
-    type: [String],
-  },
-  address: {
-    type: addressSchema,
-    required: [true, "address is required!"],
-  },
-  orders: {
-    type: [orderSchema],
+const userSchema = new Schema<IUser>(
+  {
+    userId: {
+      type: Number,
+      required: [true, "userId is required!"],
+      unique: true,
+    },
+    username: {
+      type: String,
+      required: [true, "username is required!"],
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    fullName: {
+      type: fullNameSchema,
+      required: [true, "name field is required!"],
+    },
+    age: {
+      type: Number,
+      required: [true, "age is required!"],
+    },
+    email: {
+      type: String,
+      required: [true, "email is required!"],
+    },
+    isActive: {
+      type: Boolean,
+      required: true,
+      default: true,
+    },
+    hobbies: {
+      type: [String],
+    },
+    address: {
+      type: addressSchema,
+      required: [true, "address is required!"],
+    },
+    orders: {
+      type: [orderSchema],
+    },
+  });
+
+userSchema.pre("save", async function (next) {
+  this.password = await bcrypt.hash(
+    this.password,
+    Number(config.bcrypt_salt_round)
+  );
+  next();
+});
+// Exclude password field from response data
+userSchema.set("toJSON", {
+  transform: (doc, ret) => {
+    delete ret.password;
+    return ret;
   },
 });
 
