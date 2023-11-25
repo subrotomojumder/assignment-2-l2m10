@@ -53,8 +53,11 @@ const getSingleUser = async (req: Request, res: Response) => {
 };
 const updateUser = async (req: Request, res: Response) => {
   try {
-    const {body, params } = req;
-    const result = await UserServices.updateUserInDb(Number(params.userId), body);
+    const { body, params } = req;
+    const result = await UserServices.updateUserInDb(
+      Number(params.userId),
+      body
+    );
     res.status(200).json({
       success: true,
       message: "User updated successfully!",
@@ -70,12 +73,32 @@ const updateUser = async (req: Request, res: Response) => {
 };
 const deleteUser = async (req: Request, res: Response) => {
   try {
-    const {userId } = req.params;
+    const { userId } = req.params;
     await UserServices.deleteUserInDb(Number(userId));
     res.status(200).json({
       success: true,
       message: "User successfully deleted!",
-      data: null
+      data: null,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || "Something went wrong!",
+      error: error,
+    });
+  }
+};
+const orderAddOfUser = async (req: Request, res: Response) => {
+  try {
+    const { body, params } = req;
+    const result = await UserServices.userOrderAddInDb(
+      Number(params.userId),
+      body
+    );
+    res.status(200).json({
+      success: true,
+      message: "Order created successfully!",
+      data: null,
     });
   } catch (error: any) {
     res.status(500).json({
@@ -91,5 +114,6 @@ export const UserControllers = {
   getAllUser,
   getSingleUser,
   updateUser,
-  deleteUser
+  deleteUser,
+  orderAddOfUser,
 };

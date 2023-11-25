@@ -1,5 +1,5 @@
 import { User } from "../user.model";
-import { IUser } from "./user.interface";
+import { IOrder, IUser } from "./user.interface";
 
 const createUserInDb = async (userData: IUser): Promise<IUser> => {
   const result = await User.create(userData);
@@ -35,7 +35,7 @@ const updateUserInDb = async (
     const result = await User.findOneAndUpdate({ userId: id }, updateData, {
       new: true,
       runValidators: true,
-    });
+    }).select("-orders");
     return result;
   } else {
     throw new Error("User not found!");
@@ -49,10 +49,27 @@ const deleteUserInDb = async (id: number) => {
     throw new Error("User not found!");
   }
 };
+
+const userOrderAddInDb = async (id: number, orderData: IOrder) => {
+  if (await User.isUserExists(id)) {
+    const result = await User.updateOne(
+      { userId: id },
+      { $addToSet: { orders: orderData } },
+      {
+        runValidators: true,
+      }
+    );
+    return result;
+  } else {
+    throw new Error("User not found!");
+  }
+};
+
 export const UserServices = {
   createUserInDb,
   getAllUserInDb,
   getSingleUserInDb,
   updateUserInDb,
   deleteUserInDb,
+  userOrderAddInDb,
 };
