@@ -76,9 +76,17 @@ const getOrdersByUserIdInDb = async (id: number) => {
 const getSumUserOrdersIdInDb = async (id: number) => {
   if (await User.isUserExists(id)) {
     const result = User.aggregate([
-        {$match: {userId: id}},
-    ])
-    console.log(result);
+      { $match: { userId: id } },
+      { $unwind: { path: "$orders", preserveNullAndEmptyArrays: true } },
+      {
+        $group: {
+          _id: null,
+          totalPrice: {
+            $sum: { $multiply: ["$orders.price", "$orders.quantity"] },
+          },
+        },
+      },
+    ]);
     return result;
   } else {
     throw new Error("User not found!");
