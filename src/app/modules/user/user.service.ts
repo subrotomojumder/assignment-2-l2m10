@@ -32,7 +32,10 @@ const updateUserInDb = async (
   updateData: IUser
 ): Promise<IUser | null> => {
   if (await User.isUserExists(id)) {
-    const result = await User.findOneAndUpdate({ userId: id }, updateData);
+    const result = await User.findOneAndUpdate({ userId: id }, updateData, {
+      new: true,
+      runValidators: true,
+    });
     return result;
   } else {
     throw new Error("User not found!");
@@ -51,5 +54,5 @@ export const UserServices = {
   getAllUserInDb,
   getSingleUserInDb,
   updateUserInDb,
-  deleteUserInDb
+  deleteUserInDb,
 };
