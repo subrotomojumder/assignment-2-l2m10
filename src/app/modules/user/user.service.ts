@@ -86,6 +86,12 @@ const getSumUserOrdersIdInDb = async (id: number) => {
           },
         },
       },
+      {
+        $project: {
+          _id: 0,
+          totalPrice: 1,
+        },
+      },
     ]);
     return result;
   } else {

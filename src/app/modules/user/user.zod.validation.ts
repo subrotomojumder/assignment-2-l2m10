@@ -17,7 +17,7 @@ const orderZodSchema = z.object({
   quantity: z.number(),
 });
 
-const userZodSchema = z.object({
+const userZodSchema =  z.object({body : z.object({user: z.object({
   userId: z.number(),
   username: z.string(),
   password: z.string(),
@@ -28,7 +28,7 @@ const userZodSchema = z.object({
   hobbies: z.array(z.string()).optional(),
   address: addressZodSchema,
   orders: z.array(orderZodSchema).optional(),
-});
+})})})
 
 
 export default userZodSchema;

@@ -1,17 +1,15 @@
 import { Request, Response } from "express";
 import { UserServices } from "./user.service";
-import userZodSchema from "./user.zod.validation";
 
 const createUser = async (req: Request, res: Response) => {
   try {
-    const { user } = req.body;
-    const validatedUserData = userZodSchema.parse(user);
-    const result = await UserServices.createUserInDb(validatedUserData);
+    const result = await UserServices.createUserInDb(req.body.user);
     res.status(200).json({
       success: true,
       message: "User created successfully!",
       data: result,
     });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     res.status(500).json({
       success: false,
@@ -28,6 +26,7 @@ const getAllUser = async (req: Request, res: Response) => {
       message: "Users fetched successfully!",
       data: result,
     });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     res.status(500).json({
       success: false,
@@ -45,6 +44,7 @@ const getSingleUser = async (req: Request, res: Response) => {
       message: "User fetched successfully!",
       data: result,
     });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     res.status(500).json({
       success: false,
@@ -65,6 +65,7 @@ const updateUser = async (req: Request, res: Response) => {
       message: "User updated successfully!",
       data: result,
     });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     res.status(500).json({
       success: false,
@@ -82,6 +83,7 @@ const deleteUser = async (req: Request, res: Response) => {
       message: "User successfully deleted!",
       data: null,
     });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     res.status(500).json({
       success: false,
@@ -93,15 +95,13 @@ const deleteUser = async (req: Request, res: Response) => {
 const orderAddOfUser = async (req: Request, res: Response) => {
   try {
     const { body, params } = req;
-    const result = await UserServices.userOrderAddInDb(
-      Number(params.userId),
-      body
-    );
+    await UserServices.userOrderAddInDb(Number(params.userId), body);
     res.status(200).json({
       success: true,
       message: "Order created successfully!",
       data: null,
     });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     res.status(500).json({
       success: false,
@@ -119,6 +119,7 @@ const getOrdersByUserId = async (req: Request, res: Response) => {
       message: "Order fetched successfully!",
       data: result,
     });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     res.status(500).json({
       success: false,
@@ -136,6 +137,7 @@ const getSumOfUserOrders = async (req: Request, res: Response) => {
       message: "Total price calculated successfully!",
       data: result,
     });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     res.status(500).json({
       success: false,
