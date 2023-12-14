@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import { UserServices } from "./user.service";
+import AppError from "../../utils/AppError";
 
 const createUser = async (req: Request, res: Response) => {
   try {
-    const result = await UserServices.createUserInDb(req.body.user);
+    const result = await UserServices.createUserInDb(req.body);
     res.status(200).json({
       success: true,
       message: "User created successfully!",
@@ -14,7 +15,8 @@ const createUser = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: error.message || "Something went wrong!",
-      error: error,
+      error:
+        error instanceof AppError ? { code: error.statusCode, description: error.message } : error,
     });
   }
 };
@@ -31,7 +33,7 @@ const getAllUser = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: error.message || "Something went wrong!",
-      error: error,
+      error:  error instanceof AppError ? { code: error.statusCode, description: error.message } : error,
     });
   }
 };
@@ -49,7 +51,7 @@ const getSingleUser = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: error.message || "Something went wrong!",
-      error: error,
+      error:  error instanceof AppError ? { code: error.statusCode, description: error.message } : error,
     });
   }
 };
@@ -70,7 +72,7 @@ const updateUser = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: error.message || "Something went wrong!",
-      error: error,
+      error:  error instanceof AppError ? { code: error.statusCode, description: error.message } : error,
     });
   }
 };
@@ -88,7 +90,7 @@ const deleteUser = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: error.message || "Something went wrong!",
-      error: error,
+      error:  error instanceof AppError ? { code: error.statusCode, description: error.message } : error,
     });
   }
 };
@@ -106,7 +108,7 @@ const orderAddOfUser = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: error.message || "Something went wrong!",
-      error: error,
+      error:  error instanceof AppError ? { code: error.statusCode, description: error.message } : error,
     });
   }
 };
@@ -124,7 +126,7 @@ const getOrdersByUserId = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: error.message || "Something went wrong!",
-      error: error,
+      error:  error instanceof AppError ? { code: error.statusCode, description: error.message } : error,
     });
   }
 };
@@ -142,7 +144,7 @@ const getSumOfUserOrders = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: error.message || "Something went wrong!",
-      error: error,
+      error:  error instanceof AppError ? { code: error.statusCode, description: error.message } : error,
     });
   }
 };

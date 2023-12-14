@@ -12,23 +12,42 @@ const addressZodSchema = z.object({
 });
 
 const orderZodSchema = z.object({
-  productName: z.string().trim(),
-  price: z.number(),
-  quantity: z.number(),
+  body: z.object({
+    productName: z.string().trim(),
+    price: z.number(),
+    quantity: z.number(),
+  }),
 });
 
-const userZodSchema =  z.object({body : z.object({user: z.object({
-  userId: z.number(),
-  username: z.string(),
-  password: z.string(),
-  fullName: fullNameZodSchema,
-  age: z.number().int(),
-  email: z.string().email(),
-  isActive: z.boolean(),
-  hobbies: z.array(z.string()).optional(),
-  address: addressZodSchema,
-  orders: z.array(orderZodSchema).optional(),
-})})})
+const userCreateZodSchema = z.object({
+  body: z.object({
+    userId: z.number(),
+    username: z.string(),
+    password: z.string(),
+    fullName: fullNameZodSchema,
+    age: z.number().int(),
+    email: z.string().email(),
+    isActive: z.boolean(),
+    hobbies: z.array(z.string()).optional(),
+    address: addressZodSchema,
+  }),
+});
 
-
-export default userZodSchema;
+const userUpdateZodSchema = z.object({
+  body: z.object({
+    userId: z.number().optional(),
+    username: z.string().optional(),
+    password: z.string().optional(),
+    fullName: fullNameZodSchema.optional(),
+    age: z.number().int().optional(),
+    email: z.string().email().optional(),
+    isActive: z.boolean().optional(),
+    hobbies: z.array(z.string()).optional(),
+    address: addressZodSchema.optional(),
+  }),
+});
+export const userValidation = {
+  userCreateZodSchema,
+  userUpdateZodSchema,
+  orderZodSchema,
+};

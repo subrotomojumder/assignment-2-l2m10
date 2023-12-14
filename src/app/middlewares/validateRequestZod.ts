@@ -1,7 +1,7 @@
-import { NextFunction, Request, Response } from 'express';
-import { AnyZodObject, ZodEffects } from 'zod';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { NextFunction, Request, Response } from "express";
+import { AnyZodObject, ZodEffects } from "zod";
 
-//
 const validateRequestZod =
   (schema: AnyZodObject | ZodEffects<AnyZodObject>) =>
   async (req: Request, res: Response, next: NextFunction) => {
@@ -14,7 +14,11 @@ const validateRequestZod =
       });
       return next();
     } catch (error) {
-      next(error);
+      res.status(500).json({
+        success: false,
+        message: "Something went wrong!",
+        error: error,
+      });
     }
   };
 

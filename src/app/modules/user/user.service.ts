@@ -1,3 +1,5 @@
+import AppError from "../../utils/AppError";
+import passwordEncryptingFunc from "../../utils/passwordEncryptingFunc";
 import { User } from "../user.model";
 import { IOrder, IUser } from "./user.interface";
 
@@ -24,29 +26,31 @@ const getSingleUserInDb = async (id: number): Promise<IUser | null> => {
     const result = await User.findOne({ userId: id }, { orders: 0 });
     return result;
   } else {
-    throw new Error("User not found!");
+    throw new AppError(400, "User not found!");
   }
 };
 const updateUserInDb = async (
   id: number,
-  updateData: IUser
+  updateData: Partial<IUser>
 ): Promise<IUser | null> => {
-  if (await User.isUserExists(id)) {
-    const result = await User.findOneAndUpdate({ userId: id }, updateData, {
-      new: true,
-      runValidators: true,
-    }).select("-orders");
-    return result;
-  } else {
-    throw new Error("User not found!");
+  if (!(await User.isUserExists(id))) {
+    throw new AppError(400, "User not found!");
   }
+  if (updateData.password) {
+    updateData.password = await passwordEncryptingFunc(updateData.password);
+  }
+  const result = await User.findOneAndUpdate({ userId: id }, updateData, {
+    new: true,
+    runValidators: true,
+  }).select("-orders");
+  return result;
 };
 const deleteUserInDb = async (id: number) => {
   if (await User.isUserExists(id)) {
     const result = await User.deleteOne({ userId: id });
     return result;
   } else {
-    throw new Error("User not found!");
+    throw new AppError(400, "User not found!");
   }
 };
 
@@ -61,7 +65,7 @@ const userOrderAddInDb = async (id: number, orderData: IOrder) => {
     );
     return result;
   } else {
-    throw new Error("User not found!");
+    throw new AppError(400, "User not found!");
   }
 };
 
@@ -70,7 +74,7 @@ const getOrdersByUserIdInDb = async (id: number) => {
     const result = User.findOne({ userId: id }, { orders: 1 });
     return result;
   } else {
-    throw new Error("User not found!");
+    throw new AppError(400, "User not found!");
   }
 };
 const getSumUserOrdersIdInDb = async (id: number) => {
@@ -95,7 +99,7 @@ const getSumUserOrdersIdInDb = async (id: number) => {
     ]);
     return result;
   } else {
-    throw new Error("User not found!");
+    throw new AppError(400, "User not found!");
   }
 };
 
