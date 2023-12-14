@@ -71,7 +71,7 @@ const userOrderAddInDb = async (id: number, orderData: IOrder) => {
 
 const getOrdersByUserIdInDb = async (id: number) => {
   if (await User.isUserExists(id)) {
-    const result = User.findOne({ userId: id }, { orders: 1 });
+    const result = User.findOne({ userId: id }, { orders: 1, _id: 0 });
     return result;
   } else {
     throw new AppError(400, "User not found!");

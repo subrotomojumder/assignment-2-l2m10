@@ -24,7 +24,7 @@ export interface IUser {
   isActive: boolean;
   hobbies: Array<string>;
   address: IAddress;
-  orders: Array<IOrder>;
+  orders?: Array<IOrder>;
 }
 
 export interface UserModel extends Model<IUser> {
